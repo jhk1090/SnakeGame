@@ -125,6 +125,7 @@ class Snake:
         head_position = self.positions[0]
         y, x = head_position
         unoccupied = [item for item in unoccupied if item not in self.positions]
+
         if self.direction == 'N':
             if self.status != 'S':
                 self.positions = [(y - 1, x)] + self.positions[:-1]
@@ -157,14 +158,19 @@ class Snake:
     def grow(self):
         tail_position = self.positions[-1]
         y, x = tail_position
-        if self.direction == 'N':
-            self.positions.append((y - 1, x))
-        elif self.direction == 'S':
-            self.positions.append((y + 1, x))
-        elif self.direction == 'W':
+
+        x_diff = self.positions[-1][1] - self.positions[-2][1]
+        y_diff = self.positions[-1][0] - self.positions[-2][0]
+
+        if x_diff < 0 and y_diff == 0:
             self.positions.append((y, x - 1))
-        elif self.direction == 'C':
+        elif x_diff > 0 and y_diff == 0:
             self.positions.append((y, x + 1))
+        elif y_diff < 0 and x_diff == 0:
+            self.positions.append((y - 1, x))
+        elif y_diff > 0 and x_diff == 0:
+            self.positions.append((y + 1, x))
+
         self.score += 1
         print(self.score)
 
