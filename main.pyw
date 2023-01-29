@@ -21,7 +21,7 @@ GREEN = (0, 255, 0)
 # 기본 설정 (수정 금지)
 size = [900, 900]
 screen = pygame.display.set_mode(size)
-# pygame.display.set_icon(pygame.image.load(asset.entity["poop"]))
+pygame.display.set_icon(pygame.image.load(asset.sprite["apple"]))
 pygame.display.set_caption("Snake Game")
 clock = pygame.time.Clock()
 
@@ -173,7 +173,6 @@ class Snake:
             self.positions.append((y + 1, x))
 
         self.score += 1
-        print(self.score)
 
     def reset(self):
         self.positions = [(14, 2), (14, 1), (14, 0)]  # 뱀의 위치
