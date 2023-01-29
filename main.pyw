@@ -17,7 +17,6 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 
-
 # 기본 설정 (수정 금지)
 size = [900, 900]
 screen = pygame.display.set_mode(size)
@@ -28,6 +27,10 @@ clock = pygame.time.Clock()
 done = False
 clock = pygame.time.Clock()
 last_moved_time = datetime.now()
+unoccupied = []
+for i in range(30):
+    for j in range(30):
+        unoccupied.append((i, j))
 
 KEY_DIRECTION = {
     pygame.K_UP: 'N',
@@ -47,6 +50,7 @@ class Snake:
         self.positions = [(14, 2), (14, 1), (14, 0)]  # 뱀의 위치
         self.direction = ''
         self.status = ''
+        self.score = 0
 
     def draw(self):
         for index, position in enumerate(self.positions):
@@ -117,8 +121,10 @@ class Snake:
             screen.blit(block, (position[1] * 30, position[0] * 30))
 
     def move(self):
+        global unoccupied
         head_position = self.positions[0]
         y, x = head_position
+        unoccupied = [item for item in unoccupied if item not in self.positions]
         if self.direction == 'N':
             if self.status != 'S':
                 self.positions = [(y - 1, x)] + self.positions[:-1]
@@ -159,11 +165,14 @@ class Snake:
             self.positions.append((y, x - 1))
         elif self.direction == 'C':
             self.positions.append((y, x + 1))
+        self.score += 1
+        print(self.score)
 
     def reset(self):
         self.positions = [(14, 2), (14, 1), (14, 0)]  # 뱀의 위치
         self.direction = ''
         self.status = ''
+        self.score = 0
         pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((0, 0), (0, 0)))
 
 
@@ -228,7 +237,7 @@ class Game:
         screen.blit(background, (0, 0))
 
     def sceneStart(self):
-        global done, last_moved_time
+        global done, last_moved_time, unoccupied
 
         ### 처음에만 실행 ###
         if not self.sceneInit[self.sceneNumber]:
@@ -247,8 +256,7 @@ class Game:
         if self.snakeSprite.positions[0] == self.appleSprite.position:
             self.applebiteSound[random.randint(0, 2)].play()
             self.snakeSprite.grow()
-            self.appleSprite.position = (
-                random.randint(0, 18), random.randint(0, 18))
+            self.appleSprite.position = unoccupied[random.randint(0, len(unoccupied) - 1)]
 
         if self.snakeSprite.positions[0] in self.snakeSprite.positions[1:]:
             self.moveToScene(SceneEnum.END)
