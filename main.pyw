@@ -6,6 +6,7 @@ from datetime import timedelta
 import os
 import sys
 import enum
+import asset
 
 this_path = os.path.dirname(sys.argv[0])
 
@@ -56,7 +57,7 @@ class Snake:
         for index, position in enumerate(self.positions):
             direction = ''
             if index == 0:
-                block = pygame.image.load('snake_head.png')
+                block = pygame.image.load(asset.sprite["snake"]["head"])
                 direction = self.status
             else:
                 if index == len(self.positions) - 1:
@@ -70,43 +71,43 @@ class Snake:
                         direction = 'N'
                     elif y_diff < 0:
                         direction = 'S'
-                    block = pygame.image.load('snake_tail.png')
+                    block = pygame.image.load(asset.sprite["snake"]["tail"])
                 else:
                     x_diff = position[1] - self.positions[index - 1][1]
                     x_diff_aft = position[1] - self.positions[index + 1][1]
                     y_diff = position[0] - self.positions[index - 1][0]
                     y_diff_aft = position[0] - self.positions[index + 1][0]
                     if x_diff == x_diff_aft:
-                        block = pygame.image.load('snake_body.png')
+                        block = pygame.image.load(asset.sprite["snake"]["body"])
                         direction = 'N' # or 'S'
                     elif y_diff == y_diff_aft:
-                        block = pygame.image.load('snake_body.png')
+                        block = pygame.image.load(asset.sprite["snake"]["body"])
                         direction = 'W' # or 'E'
                     elif x_diff_aft == 0:
                         if x_diff == 1 and y_diff_aft == 1:
-                            block = pygame.image.load('snake_curve.png')
+                            block = pygame.image.load(asset.sprite["snake"]["curve"])
                             direction = 'W'
                         elif x_diff == -1 and y_diff_aft == -1:
-                            block = pygame.image.load('snake_curve.png')
+                            block = pygame.image.load(asset.sprite["snake"]["curve"])
                             direction = 'E'
                         elif x_diff == 1 and y_diff_aft == -1:
-                            block = pygame.image.load('snake_curve_west.png')
+                            block = pygame.image.load(asset.sprite["snake"]["curve_west"])
                             direction = 'E'
                         elif x_diff == -1 and y_diff_aft == 1:
-                            block = pygame.image.load('snake_curve_west.png')
+                            block = pygame.image.load(asset.sprite["snake"]["curve_west"])
                             direction = 'W'
                     elif y_diff_aft == 0:
                         if y_diff == 1 and x_diff_aft == -1:
-                            block = pygame.image.load('snake_curve.png')
+                            block = pygame.image.load(asset.sprite["snake"]["curve"])
                             direction = 'N'
                         elif y_diff == -1 and x_diff_aft == 1:
-                            block = pygame.image.load('snake_curve.png')
+                            block = pygame.image.load(asset.sprite["snake"]["curve"])
                             direction = 'S'
                         if y_diff == 1 and x_diff_aft == 1:
-                            block = pygame.image.load('snake_curve_west.png')
+                            block = pygame.image.load(asset.sprite["snake"]["curve_west"])
                             direction = 'S'
                         elif y_diff == -1 and x_diff_aft == -1:
-                            block = pygame.image.load('snake_curve_west.png')
+                            block = pygame.image.load(asset.sprite["snake"]["curve_west"])
                             direction = 'N'
             angle = 0
             if direction == 'N':
@@ -187,7 +188,7 @@ class Apple:
         self.position = position
 
     def draw(self):
-        block = pygame.image.load('apple.png')
+        block = pygame.image.load(asset.sprite["apple"])
         screen.blit(block, (self.position[1] * 30, self.position[0] * 30))
 
     def reset(self):
@@ -208,9 +209,11 @@ class Game:
         # 게임 시작 시, 뱀과 사과를 초기화
         self.snakeSprite = Snake()
         self.appleSprite = Apple()
-        self.wallhitSound = pygame.mixer.Sound("hurt.mp3")
-        self.bgmusicSound = pygame.mixer.Sound("Street Party.mp3")
-        self.applebiteSound = [pygame.mixer.Sound("apple_bite1.mp3"), pygame.mixer.Sound("apple_bite2.mp3"), pygame.mixer.Sound("apple_bite3.mp3")]
+        self.wallhitSound = pygame.mixer.Sound(asset.sound["sfx"]["hurt"])
+        self.bgmusicSound = pygame.mixer.Sound(asset.sound["background"]["Start"])
+        self.applebiteSound = []
+        for i in asset.sound["sfx"]["apple_bite"]:
+            self.applebiteSound.append(pygame.mixer.Sound(i))
         self.bgmusicSound.set_volume(0.2)
         self.wallhitSound.set_volume(0.2)
         for sound in self.applebiteSound:
@@ -239,7 +242,7 @@ class Game:
             self.sceneInit[self.sceneNumber] = True
         ### 처음에만 실행 ###
 
-        background = pygame.image.load('Lobby.png')
+        background = pygame.image.load(asset.background["Lobby"])
         screen.blit(background, (0, 0))
 
     def sceneStart(self):
@@ -252,7 +255,7 @@ class Game:
             self.sceneInit[self.sceneNumber] = True
         ### 처음에만 실행 ###
 
-        background = pygame.image.load('checkerboard.png')
+        background = pygame.image.load(asset.background["Start"])
         screen.blit(background, (0, 0))
 
         if timedelta(seconds=0.1) <= datetime.now() - last_moved_time:
@@ -284,7 +287,7 @@ class Game:
             self.sceneInit[self.sceneNumber] = True
         ### 처음에만 실행 ###
 
-        background = pygame.image.load('End.png')
+        background = pygame.image.load(asset.background["End"])
         screen.blit(background, (0, 0))
 
     def run(self):
