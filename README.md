@@ -19,3 +19,6 @@ Python==3.10.9
 
 ## 조작법
 화살표 조작키 또는 w, a, s, d
+
+## 스크린샷
+<img src=https://user-images.githubusercontent.com/72603240/216086482-9f4d6271-bda5-4e48-9860-b10770f20984.png width=500 height=530>

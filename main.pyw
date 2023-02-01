@@ -40,6 +40,10 @@ KEY_DIRECTION = {
     pygame.K_DOWN: 'S',
     pygame.K_LEFT: 'W',
     pygame.K_RIGHT: 'E',
+    pygame.K_w: 'N',
+    pygame.K_s: 'S',
+    pygame.K_a: 'W',
+    pygame.K_d: 'E'
 }
 
 
