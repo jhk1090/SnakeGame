@@ -5,7 +5,7 @@ this_path = os.path.dirname(sys.argv[0])
 
 background = {
     "Lobby": f"{this_path}\\asset\\background\\Lobby.png",
-    "Start": f"{this_path}\\asset\\background\\Start.png",
+    "Start": f"{this_path}\\asset\\background\\StartX20_700.png",
     "End": f"{this_path}\\asset\\background\\End.png"
 }
 

@@ -19,18 +19,20 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 
 # 기본 설정 (수정 금지)
-size = [900, 900]
+size = (700, 700)
 screen = pygame.display.set_mode(size)
 pygame.display.set_icon(pygame.image.load(asset.sprite["apple"]))
 pygame.display.set_caption("Snake Game")
 clock = pygame.time.Clock()
 
+BLOCK_UNIT = 20
+BLOCK_SIZE = size[0] / BLOCK_UNIT
 done = False
 clock = pygame.time.Clock()
 last_moved_time = datetime.now()
 unoccupied = []
-for i in range(30):
-    for j in range(30):
+for i in range(BLOCK_UNIT):
+    for j in range(BLOCK_UNIT):
         unoccupied.append((i, j))
 
 KEY_DIRECTION = {
@@ -42,13 +44,13 @@ KEY_DIRECTION = {
 
 
 def draw_block(screen, color, position):
-    block = pygame.Rect((position[1] * 30, position[0] * 30),
-                        (30, 30))
+    block = pygame.Rect((position[1] * BLOCK_SIZE, position[0] * BLOCK_SIZE),
+                        (BLOCK_SIZE, BLOCK_SIZE))
     pygame.draw.rect(screen, color, block)
 
 class Snake:
     def __init__(self):
-        self.positions = [(14, 2), (14, 1), (14, 0)]  # 뱀의 위치
+        self.positions = [(int(BLOCK_UNIT / 2), 2), (int(BLOCK_UNIT / 2), 1), (int(BLOCK_UNIT / 2), 0)]  # 뱀의 위치
         self.direction = ''
         self.status = ''
         self.score = 0
@@ -119,7 +121,8 @@ class Snake:
             elif direction == 'E':
                 angle = 0
             block = pygame.transform.rotate(block, angle)
-            screen.blit(block, (position[1] * 30, position[0] * 30))
+            block = pygame.transform.scale(block, (BLOCK_SIZE, BLOCK_SIZE))
+            screen.blit(block, (position[1] * BLOCK_SIZE, position[0] * BLOCK_SIZE))
 
     def move(self):
         global unoccupied
@@ -188,7 +191,8 @@ class Apple:
 
     def draw(self):
         block = pygame.image.load(asset.sprite["apple"])
-        screen.blit(block, (self.position[1] * 30, self.position[0] * 30))
+        block = pygame.transform.scale(block, (BLOCK_SIZE, BLOCK_SIZE))
+        screen.blit(block, (self.position[1] * BLOCK_SIZE, self.position[0] * BLOCK_SIZE))
 
     def reset(self):
         pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((0, 0), (0, 0)))
@@ -242,6 +246,7 @@ class Game:
         ### 처음에만 실행 ###
 
         background = pygame.image.load(asset.background["Lobby"])
+        background = pygame.transform.scale(background, size)
         screen.blit(background, (0, 0))
 
     def sceneStart(self):
@@ -255,6 +260,7 @@ class Game:
         ### 처음에만 실행 ###
 
         background = pygame.image.load(asset.background["Start"])
+        background = pygame.transform.scale(background, size)
         screen.blit(background, (0, 0))
 
         if timedelta(seconds=0.1) <= datetime.now() - last_moved_time:
@@ -269,7 +275,7 @@ class Game:
         if self.snakeSprite.positions[0] in self.snakeSprite.positions[1:]:
             self.moveToScene(SceneEnum.END)
 
-        if self.snakeSprite.positions[0][1] > 29 or self.snakeSprite.positions[0][1] < 0 or self.snakeSprite.positions[0][0] < 0 or self.snakeSprite.positions[0][0] > 29:
+        if self.snakeSprite.positions[0][1] > BLOCK_UNIT - 1 or self.snakeSprite.positions[0][1] < 0 or self.snakeSprite.positions[0][0] < 0 or self.snakeSprite.positions[0][0] > BLOCK_UNIT - 1:
             self.moveToScene(SceneEnum.END)
 
         self.snakeSprite.draw()
@@ -287,6 +293,7 @@ class Game:
         ### 처음에만 실행 ###
 
         background = pygame.image.load(asset.background["End"])
+        background = pygame.transform.scale(background, size)
         screen.blit(background, (0, 0))
 
     def run(self):
